@@ -4,12 +4,17 @@ class Node {
     radius;
     muscles = [];
 
-    constructor({
+    dna={};
+
+    world;
+
+    constructor(world, {
                     friction=Math.random(),
                     radius =0.1,
                     position=false,
                     maxSize=2
                 }) {
+        this.world = world;
         this.friction = friction;
         this.radius = radius;
 
@@ -17,13 +22,18 @@ class Node {
             Math.random()*maxSize,
             Math.random()*maxSize
         );
-        console.log(this.friction);
+
+        this.dna.friction = friction;
+        this.dna.radius = radius;
+        this.dna.position = initialPosition;
+        this.dna.maxSize = maxSize;
+
 
         const bd = new box2d.b2BodyDef();
         bd.type = box2d.b2BodyType.b2_dynamicBody;
         bd.position.Set(initialPosition.x, initialPosition.y);
         bd.fixedRotation = true;
-        this.body = window.world.CreateBody(bd);
+        this.body = this.world.CreateBody(bd);
 
         const nodeShape = new box2d.b2CircleShape();
         nodeShape.m_radius = this.radius;
@@ -40,7 +50,15 @@ class Node {
         return this.muscles;
     }
 
+    destroy(){
+        this.world.DestroyBody(this.body);
+    }
+
     update(frameCount){
 
+    }
+
+    getDna(){
+        return this.dna;
     }
 }

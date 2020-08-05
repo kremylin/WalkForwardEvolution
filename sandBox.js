@@ -3,8 +3,6 @@
 
 var creature;
 
-var p5Game = new window.p5(null, document.getElementById('game-container'));
-
 function vB2dToP5(vect){
     return {
         x: b2dToP5(vect.x),
@@ -41,7 +39,7 @@ function setup() {
 
     //Ground
     {
-        const worldWidth = p5ToB2d(window.innerWidth);
+        const worldWidth = 500;//p5ToB2d(window.innerWidth);
         const bdGround = new box2d.b2BodyDef();
         window.ground = window.world.CreateBody(bdGround);
 
@@ -57,7 +55,7 @@ function setup() {
     }
 
 
-    creature = new Creature();
+    creature = new Creature(world, {});
     window.camera = new Camera(createVector(window.innerWidth/2, -100));
 
 }
@@ -112,4 +110,8 @@ function drawMuscle(muscle){
             vB2dToP5(muscle.nodeB.body.GetPosition()).y
         );
     pop();
+}
+
+function mc(){
+    mutateCreature(creature);
 }
