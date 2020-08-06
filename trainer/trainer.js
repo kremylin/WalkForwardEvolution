@@ -11,9 +11,18 @@ async function train(){
         creaturesDna.sort((a,b)=>b.finalPosition.x-a.finalPosition.x);
 
         if(!(i%10)) {
-            console.log("Best : ", creaturesDna[0].finalPosition);
+            //console.log("Best : ", creaturesDna[0].finalPosition);
         }
+        //for(creatureDna of creaturesDna){
+        //    console.log(creatureDna.finalPosition.x);
+        //}
         postMessage(creaturesDna);
+        let bestX = creaturesDna[0].finalPosition.x+'';
+        //console.log("bestX: "+bestX);
+        //console.log("--------------------------");
+        //console.log(creaturesDna);
+        postMessage(i);
+        postMessage(bestX);
         // keep a 3rd of the best, a 3rd mutated, a 3rd random
         creaturesDna.length = 4;
         for(let j=0;j<4;j++){

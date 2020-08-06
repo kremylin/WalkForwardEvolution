@@ -27,7 +27,6 @@ function p5ToB2d(d){
 }
 
 function initWorld(){
-    console.log("initWorld");
     const gravity = new box2d.b2Vec2(0,-10);
     window.world = new box2d.b2World(gravity);
     //window.world.SetContactListener(new CollisionListener());
@@ -60,14 +59,19 @@ function setup() {
 
     trainWorker = new Worker("trainer/trainer.js");
     trainWorker.onmessage = function(e) {
-        renewCreature(e.data);
+        if(typeof e.data === 'string'){
+            document.getElementById("best").value = e.data;
+        } else if(typeof e.data === 'number'){
+            document.getElementById("gen").value = e.data
+        } else {
+            renewCreature(e.data);
+        }
     }
 }
 
 function renewCreature(creaturesDna){
     if(doRenew && creaturesDna.length){
-        console.log("renew");
-        console.log(creaturesDna);
+        //console.log(creaturesDna);
         delete window.world;
         initWorld();
         let trainedDna = creaturesDna[0];
@@ -75,6 +79,7 @@ function renewCreature(creaturesDna){
         creatures[0] = new Creature(window.world, trainedDna);
         window.camera = new Camera(createVector(window.innerWidth/2, -100));
         doRenew = false;
+        frameCnt = 0;
         setTimeout(()=>{doRenew = true;},30000);
     }
 }
@@ -82,9 +87,9 @@ function renewCreature(creaturesDna){
 function draw() {
     if(window.world) {
         window.world.Step(window.timeStep, window.velocityIterations, window.positionIterations);
-
+        frameCnt++;
         clear();
-        background(0);
+        background(`rgba(153,217,234,1)`);
 
         if(creatures[0]){
             let camPos = createVector(-vB2dToP5(creatures[0].getPosition()).x+window.innerWidth/2, -100);
@@ -93,8 +98,10 @@ function draw() {
         }
         window.camera && window.camera.applyCamera();
 
+        drawGround();
+
         for (let creature of creatures) {
-            creature.update(frameCount);
+            creature.update(frameCnt);
 
             for (let node of creature.nodes) {
                 drawNode(node);
@@ -105,6 +112,10 @@ function draw() {
             }
         }
     }
+}
+
+function drawGround(){
+    rect(-window.camera.position.x, window.innerHeight+20, window.innerWidth, 100);
 }
 
 function drawNode(node){

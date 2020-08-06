@@ -27,7 +27,7 @@ function runDna(creatureDna)
 
     let creature = new Creature(world, creatureDna);
 
-    for (let i = 0; i<60*60; i++) {
+    for (let i = 0; i<60*30; i++) {
         world.Step(timeStep, velocityIterations, positionIterations);
         creature.update(i);
     }

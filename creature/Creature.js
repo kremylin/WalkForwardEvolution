@@ -111,8 +111,6 @@ class Creature {
     }
 
     getDna(){
-        console.log(this.musclesDna);
-        console.log(this.nodesDna);
         return {
             nodesDna: this.nodesDna,
             musclesDna: this.musclesDna
