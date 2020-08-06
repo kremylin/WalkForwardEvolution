@@ -36,6 +36,8 @@ class Creature {
                 muscleDna.nodeA = this.nodes[muscleDna.nodeAIndex];
                 muscleDna.nodeB = this.nodes[muscleDna.nodeBIndex];
                 let muscleAB = new Muscle(this.world, muscleDna);
+                delete muscleDna.nodeA;
+                delete muscleDna.nodeB;
                 this.muscles.push(muscleAB);
             }
         } else {
@@ -89,10 +91,12 @@ class Creature {
     }
 
     getPosition(){
-        let sumVect = this.nodes.reduce((sumV,v)=>new box2d.b2Vec2(
-            sumV.x+v.x,
-            sumV.y+v.y
-        ));
+        let sumVect = this.nodes.reduce((sumV,node)=>{
+            return {
+                x: sumV.x + node.body.GetPosition().x,
+                y: sumV.y + node.body.GetPosition().y
+            }
+        },   {x: 0, y: 0});
 
         return new box2d.b2Vec2(
             sumVect.x/this.nodes.length,
@@ -106,7 +110,9 @@ class Creature {
         }
     }
 
-    toDNA(){
+    getDna(){
+        console.log(this.musclesDna);
+        console.log(this.nodesDna);
         return {
             nodesDna: this.nodesDna,
             musclesDna: this.musclesDna

@@ -1,31 +1,52 @@
-function mutateCreature(creatureDna){
-    console.log("Mutation : ", creature);
+function generateCreature() {
+    let creatureDna ={
+        nodesDna: [{
+            friction: Math.random(),
+            radius: 0.1,
+            position: {
+                x: Math.random() * 2,
+                y: Math.random() * 2
+            }
+        }],
+        musclesDna: []
+    };
+    let nbNodes = Math.floor(Math.random() * 9 + 1);
+    for (;nbNodes--;) {
+        addRandomNode(creatureDna);
+    }
+    return creatureDna;
+}
+
+function mutateCreature(creatureDna1){
+    let creatureDna = JSON.parse(JSON.stringify(creatureDna1));
     let nbNodeToRemove = Math.floor(Math.random()*3);
     for(;nbNodeToRemove--;){
-        let nodeToRemove = Math.floor(Math.random()*creature.nodesDna.length);
+        let nodeToRemove = Math.floor(Math.random()*creatureDna.nodesDna.length);
         removeNode(creatureDna, nodeToRemove);
     }
 
-    let nbNodeToAdd = Math.floor(Math.random()*3);
+    let nbNodeToAdd = Math.floor(Math.random()*(11-creatureDna.nodesDna.length));
     for(;nbNodeToAdd--;){
         addRandomNode(creatureDna);
     }
 
-    let nbMuscleToEdit = Math.floor(Math.random()*creature.musclesDna.length);
+    let nbMuscleToEdit = Math.floor(Math.random()*creatureDna.musclesDna.length);
     for(;nbMuscleToEdit--;){
-        let muscleToEdit = Math.floor(Math.random()*creature.musclesDna.length);
-        muteMuscle(creature.musclesDna[muscleToEdit]);
+        let muscleToEdit = Math.floor(Math.random()*creatureDna.musclesDna.length);
+        muteMuscle(creatureDna.musclesDna[muscleToEdit]);
     }
+
+    return creatureDna;
 }
 
 function addRandomNode(creatureDna){
     let nodeDna = {
         friction: Math.random(),
         radius: 0.1,
-        position: new box2d.b2Vec2(
-            Math.random()*2,
-            Math.random()*2
-        )
+        position: {
+            x: Math.random()*2,
+            y: Math.random()*2
+        }
     };
     addNodeWithRandomMuscles(creatureDna, nodeDna);
 }
@@ -83,9 +104,6 @@ function removeNode(creatureDna, nodeToRemove){
         if(creatureDna.musclesDna[i].nodeAIndex === nodeToRemove || creatureDna.musclesDna[i].nodeBIndex === nodeToRemove){
             removeMuscle(creatureDna, i);
         }
-            let muscle = this.nodes[nodeToRemove].muscles[0];
-        this.muscles.splice(this.muscles.indexOf(muscle),1);
-        muscle.destroy();
     }
 
     creatureDna.nodesDna.splice(nodeToRemove, 1);

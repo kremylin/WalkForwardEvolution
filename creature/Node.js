@@ -18,10 +18,10 @@ class Node {
         this.friction = friction;
         this.radius = radius;
 
-        let initialPosition = position || new box2d.b2Vec2(
-            Math.random()*maxSize,
-            Math.random()*maxSize
-        );
+        let initialPosition = position || {
+            x: Math.random()*maxSize,
+            y: Math.random()*maxSize
+        };
 
         this.dna.friction = friction;
         this.dna.radius = radius;

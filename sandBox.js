@@ -1,7 +1,7 @@
 //Math.random = Math.seedrandom;
 //Math.seedrandom('c');
 
-var creature;
+var creatures=[];
 
 function vB2dToP5(vect){
     return {
@@ -55,7 +55,8 @@ function setup() {
     }
 
 
-    creature = new Creature(world, {});
+    let trainedDna = train();
+    creatures[0] = new Creature(world, trainedDna);
     window.camera = new Camera(createVector(window.innerWidth/2, -100));
 
 }
@@ -68,14 +69,16 @@ function draw() {
 
     window.camera && window.camera.applyCamera();
 
-    creature.update(frameCount);
+    for(let creature of creatures) {
+        creature.update(frameCount);
 
-    for(let node of creature.nodes){
-        drawNode(node);
-    }
+        for (let node of creature.nodes) {
+            drawNode(node);
+        }
 
-    for(let muscle of creature.muscles){
-        drawMuscle(muscle);
+        for (let muscle of creature.muscles) {
+            drawMuscle(muscle);
+        }
     }
 }
 
@@ -113,5 +116,18 @@ function drawMuscle(muscle){
 }
 
 function mc(){
-    mutateCreature(creature);
+    let creatureDna = creatures[creatures.length-1].getDna();
+    creatureDna = mutateCreature(creatureDna);
+    creatures.push(new Creature(window.world, creatureDna));
+}
+
+function clone(){
+    let creatureDna = creatures[creatures.length-1].getDna();
+    creatures.push(new Creature(window.world, creatureDna));
+
+}
+
+function addRandomCreature(){
+    let creatureDna = generateCreature();
+    creatures.push(new Creature(window.world, creatureDna));
 }
