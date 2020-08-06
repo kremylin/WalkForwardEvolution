@@ -2,6 +2,7 @@
 //Math.seedrandom('c');
 
 var creatures=[];
+var doRenew = true;
 
 function vB2dToP5(vect){
     return {
@@ -25,11 +26,8 @@ function p5ToB2d(d){
     return d/100;
 }
 
-function setup() {
-    createCanvas(window.innerWidth-20, window.innerHeight-20);
-    frameRate(60);
-    background(153);
-
+function initWorld(){
+    console.log("initWorld");
     const gravity = new box2d.b2Vec2(0,-10);
     window.world = new box2d.b2World(gravity);
     //window.world.SetContactListener(new CollisionListener());
@@ -53,31 +51,58 @@ function setup() {
         groundFixture.density = 10;
         window.ground.CreateFixture(groundFixture);
     }
+}
 
+function setup() {
+    createCanvas(window.innerWidth-20, window.innerHeight-20);
+    frameRate(60);
+    background(153);
 
-    let trainedDna = train();
-    creatures[0] = new Creature(world, trainedDna);
-    window.camera = new Camera(createVector(window.innerWidth/2, -100));
+    trainWorker = new Worker("trainer/trainer.js");
+    trainWorker.onmessage = function(e) {
+        renewCreature(e.data);
+    }
+}
 
+function renewCreature(creaturesDna){
+    if(doRenew && creaturesDna.length){
+        console.log("renew");
+        console.log(creaturesDna);
+        delete window.world;
+        initWorld();
+        let trainedDna = creaturesDna[0];
+        creatures=[];
+        creatures[0] = new Creature(window.world, trainedDna);
+        window.camera = new Camera(createVector(window.innerWidth/2, -100));
+        doRenew = false;
+        setTimeout(()=>{doRenew = true;},30000);
+    }
 }
 
 function draw() {
-    window.world.Step(window.timeStep, window.velocityIterations, window.positionIterations);
+    if(window.world) {
+        window.world.Step(window.timeStep, window.velocityIterations, window.positionIterations);
 
-    clear();
-    background(0);
+        clear();
+        background(0);
 
-    window.camera && window.camera.applyCamera();
-
-    for(let creature of creatures) {
-        creature.update(frameCount);
-
-        for (let node of creature.nodes) {
-            drawNode(node);
+        if(creatures[0]){
+            let camPos = createVector(-vB2dToP5(creatures[0].getPosition()).x+window.innerWidth/2, -100);
+            window.camera.setPosition(camPos);
+            document.getElementById("campos").value = creatures[0].getPosition().x;
         }
+        window.camera && window.camera.applyCamera();
 
-        for (let muscle of creature.muscles) {
-            drawMuscle(muscle);
+        for (let creature of creatures) {
+            creature.update(frameCount);
+
+            for (let node of creature.nodes) {
+                drawNode(node);
+            }
+
+            for (let muscle of creature.muscles) {
+                drawMuscle(muscle);
+            }
         }
     }
 }
@@ -130,4 +155,8 @@ function clone(){
 function addRandomCreature(){
     let creatureDna = generateCreature();
     creatures.push(new Creature(window.world, creatureDna));
+}
+
+function triggerRenew(){
+    doRenew = true;
 }

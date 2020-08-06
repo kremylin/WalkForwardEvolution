@@ -1,3 +1,5 @@
+//importScripts('creature.js', 'truc.js');
+
 function runDna(creatureDna)
 {
     const gravity = new box2d.b2Vec2(0, -10);
@@ -27,6 +29,7 @@ function runDna(creatureDna)
 
     for (let i = 0; i<60*60; i++) {
         world.Step(timeStep, velocityIterations, positionIterations);
+        creature.update(i);
     }
 
     return creature.getPosition();

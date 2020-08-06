@@ -1,26 +1,26 @@
-function train(){
-    let creaturesDna=[];
-    for(let i=0;i<(30+70);i++){
+importScripts("../creature/Creature.js","../creature/Node.js","../creature/Muscle.js","runner.js","mutationner.js","../lib/box2d.umd.js");
+let creaturesDna = [];
+async function train(){
+    for(let i=0;i<(12+10);i++){
         creaturesDna.push(generateCreature());
     }
 
     //For 100 generations
-    for(let i=0;i<1000;i++) {
+    for(let i=0;i<5000;i++) {
         creaturesDna = evaluate(creaturesDna);
         creaturesDna.sort((a,b)=>b.finalPosition.x-a.finalPosition.x);
 
-        if(!(i%100)) {
-            console.log("Best : ", creaturesDna[0]);
+        if(!(i%10)) {
             console.log("Best : ", creaturesDna[0].finalPosition);
         }
-
+        postMessage(creaturesDna);
         // keep a 3rd of the best, a 3rd mutated, a 3rd random
-        creaturesDna.length = 10;
-        for(let j=0;j<10;j++){
+        creaturesDna.length = 4;
+        for(let j=0;j<4;j++){
             delete creaturesDna[j].finalPosition;
             creaturesDna.push(mutateCreature(creaturesDna[j]));
         }
-        for(let j=0;j<(10+70);j++){
+        for(let j=0;j<(4+10);j++){
             creaturesDna.push(generateCreature());
         }
     }
@@ -35,3 +35,4 @@ function evaluate(creaturesDna){
     return creaturesDna;
 }
 
+train();
