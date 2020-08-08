@@ -36,7 +36,7 @@ function initWorld(){
 
     //Ground
     {
-        const worldWidth = 500;//p5ToB2d(window.innerWidth);
+        const worldWidth = 2080;//p5ToB2d(window.innerWidth);
         const bdGround = new box2d.b2BodyDef();
         window.ground = window.world.CreateBody(bdGround);
 
@@ -87,7 +87,6 @@ function renewCreature(creaturesDna){
 function draw() {
     if(window.world) {
         window.world.Step(window.timeStep, window.velocityIterations, window.positionIterations);
-        frameCnt++;
         clear();
         background(`rgba(153,217,234,1)`);
 
@@ -111,6 +110,7 @@ function draw() {
                 drawMuscle(muscle);
             }
         }
+        frameCnt++;
     }
 }
 

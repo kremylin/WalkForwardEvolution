@@ -88,12 +88,12 @@ function addMuscle(creatureDna, nodeAIndex, nodeBIndex){
         nodeBIndex: nodeBIndex
     };
 
-    muscleDna.contractFrame= Math.floor(Math.random()*this.cycleLength);
+    muscleDna.contractFrame= Math.floor(Math.random()*muscleDna.cycleLength);
 
     creatureDna.musclesDna.push(muscleDna);
 }
 
-function removeNode(creatureDna, nodeToRemove){
+function removeNode(creatureDna, nodeToRemove, connectedGraph=true){
     for(let i=creatureDna.musclesDna.length;i--;){
         if(creatureDna.musclesDna[i].nodeAIndex > nodeToRemove){
             creatureDna.musclesDna[i].nodeAIndex--;
@@ -108,11 +108,34 @@ function removeNode(creatureDna, nodeToRemove){
 
     creatureDna.nodesDna.splice(nodeToRemove, 1);
     //The graph of the creature can be disjoinct TODO: fix that
+    if(connectedGraph){
+        removeDisconnectedNodes(creatureDna);
+    }
 }
 
 function removeMuscle(creatureDna, muscleToRemove){
     creatureDna.musclesDna.splice(muscleToRemove, 1);
-    //The graph of the creature can be disjoinct TODO: fix that
+}
+
+function removeDisconnectedNodes(creatureDna){
+    let linkedNodes = depthFirst(creatureDna, 0);
+    for(let i=creatureDna.nodesDna.length;i--;){
+        if(!linkedNodes.includes(i)) {
+            removeNode(creatureDna, i, false);
+        }
+    }
+}
+
+function depthFirst(creatureDna, root, marked = []){
+    marked.push(root);
+    for(let i=0; i<creatureDna.musclesDna.length; i++){
+        if(creatureDna.musclesDna[i].nodeAIndex === root && !marked.includes(creatureDna.musclesDna[i].nodeBIndex)){
+            marked = depthFirst(creatureDna, creatureDna.musclesDna[i].nodeBIndex, marked);
+        } else if(creatureDna.musclesDna[i].nodeBIndex === root && !marked.includes(creatureDna.musclesDna[i].nodeAIndex)){
+            marked = depthFirst(creatureDna, creatureDna.musclesDna[i].nodeAIndex, marked);
+        }
+    }
+    return marked;
 }
 
 function muteMuscle(muscleDna){

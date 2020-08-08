@@ -25,6 +25,7 @@ function runDna(creatureDna)
         ground.CreateFixture(groundFixture);
     }
 
+
     let creature = new Creature(world, creatureDna);
 
     for (let i = 0; i<60*30; i++) {

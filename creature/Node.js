@@ -9,19 +9,16 @@ class Node {
     world;
 
     constructor(world, {
-                    friction=Math.random(),
-                    radius =0.1,
-                    position=false,
-                    maxSize=2
+                    friction,
+                    radius,
+                    position,
+                    maxSize
                 }) {
         this.world = world;
         this.friction = friction;
         this.radius = radius;
 
-        let initialPosition = position || {
-            x: Math.random()*maxSize,
-            y: Math.random()*maxSize
-        };
+        let initialPosition = position;
 
         this.dna.friction = friction;
         this.dna.radius = radius;

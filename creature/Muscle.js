@@ -17,10 +17,10 @@ class Muscle {
     world;
 
     constructor(world, {
-                    cycleLength=Math.floor(Math.random()*120+1),
+                    cycleLength,
                     strength,
                     extendedLength,
-                    contractedLength=Math.random(),
+                    contractedLength,
                     contractFrame,
                     nodeA,
                     nodeB
@@ -28,10 +28,10 @@ class Muscle {
 
         this.world = world;
         this.cycleLength = cycleLength;
-        this.strength = strength || Math.random();
-        this.extendedLength = extendedLength || box2d.b2Vec2.DistanceVV(nodeA.body.GetPosition(), nodeB.body.GetPosition());
+        this.strength = strength;
+        this.extendedLength = extendedLength;
         this.contractedLength = contractedLength;
-        this.contractFrame = contractFrame || Math.floor(Math.random()*this.cycleLength);
+        this.contractFrame = contractFrame;
         this.nodeA = nodeA;
         this.nodeB = nodeB;
 
