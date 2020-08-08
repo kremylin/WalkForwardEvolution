@@ -19,14 +19,15 @@ function generateCreature() {
 
 function mutateCreature(creatureDna1){
     let creatureDna = JSON.parse(JSON.stringify(creatureDna1));
-    let nbNodeToRemove = Math.floor(Math.random()*3);
-    for(;nbNodeToRemove--;){
+
+    let pRemoveNode = Math.random();
+    if(pRemoveNode<0.25 && creatureDna.nodesDna.length>1){
         let nodeToRemove = Math.floor(Math.random()*creatureDna.nodesDna.length);
         removeNode(creatureDna, nodeToRemove);
     }
 
-    let nbNodeToAdd = Math.floor(Math.random()*(11-creatureDna.nodesDna.length));
-    for(;nbNodeToAdd--;){
+    let pAddNode = Math.random();
+    if(pAddNode<0.25){
         addRandomNode(creatureDna);
     }
 
@@ -95,14 +96,15 @@ function addMuscle(creatureDna, nodeAIndex, nodeBIndex){
 
 function removeNode(creatureDna, nodeToRemove, connectedGraph=true){
     for(let i=creatureDna.musclesDna.length;i--;){
-        if(creatureDna.musclesDna[i].nodeAIndex > nodeToRemove){
-            creatureDna.musclesDna[i].nodeAIndex--;
-        }
-        if(creatureDna.musclesDna[i].nodeBIndex > nodeToRemove) {
-            creatureDna.musclesDna[i].nodeBIndex--;
-        }
         if(creatureDna.musclesDna[i].nodeAIndex === nodeToRemove || creatureDna.musclesDna[i].nodeBIndex === nodeToRemove){
             removeMuscle(creatureDna, i);
+        } else {
+            if (creatureDna.musclesDna[i].nodeAIndex > nodeToRemove) {
+                creatureDna.musclesDna[i].nodeAIndex--;
+            }
+            if (creatureDna.musclesDna[i].nodeBIndex > nodeToRemove) {
+                creatureDna.musclesDna[i].nodeBIndex--;
+            }
         }
     }
 
